@@ -1,0 +1,25 @@
+table{
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid black;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background-color: #efefef;
+ 
+}
+
+td, th {
+    padding: 6px 12px;
+
+
+  }
+
+  td.position{
+        text-align: center;
+        font-weight: bold;
+  }
+
+  td.count{
+    text-align: center;
+  }

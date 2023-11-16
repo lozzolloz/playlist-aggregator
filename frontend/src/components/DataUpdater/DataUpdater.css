@@ -1,0 +1,36 @@
+.data-updater__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: lightgreen;
+  padding: 7px;
+  margin: 10px;
+  border-radius: 15px;
+}
+
+.data-updater__button {
+  width: 150px;
+}
+
+.data-updater__button,
+.wrapped-button {
+  padding: 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  width: 150px;
+}
+
+.wrapped-button {
+  width: 165px;
+}
+
+p,
+a {
+  font-size: 14px;
+}
+
+p,
+a,
+button {
+  margin: 7px 8px;
+}
