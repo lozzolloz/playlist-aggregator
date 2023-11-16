@@ -1,4 +1,4 @@
-.data-updater__container {
+.data-updater__subcontainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -6,6 +6,17 @@
   padding: 7px;
   margin: 10px;
   border-radius: 15px;
+}
+
+.data-updater{
+  display: flex;
+  flex-direction: column;
+align-items: center;
+}
+
+.loggedin-logout{
+  display: flex;
+  flex-direction: row;;
 }
 
 .data-updater__button {
@@ -24,13 +35,21 @@
   width: 165px;
 }
 
-p,
-a {
-  font-size: 14px;
+.data-updater h3{
+  font-size: 16px;
+  font-weight: normal;
 }
 
-p,
-a,
+.data-updater p{
+  font-size: 12.5px;
+  opacity: 0.6;
+  color: black;
+  margin: 12px 5px 2px
+}
+
+
+
+.data-updater__subcontainer p,
 button {
   margin: 7px 8px;
 }

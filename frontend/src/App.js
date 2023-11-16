@@ -138,13 +138,17 @@ function App() {
 
   const addTracksToPlaylist = async (playlistId, searchResults) => {
     const chunkSize = 100;
-  
+
     for (let i = 0; i < searchResults.length; i += chunkSize) {
-      const urisChunk = searchResults.slice(i, i + chunkSize).map(result => result.uri);
-  
+      const urisChunk = searchResults
+        .slice(i, i + chunkSize)
+        .map((result) => result.uri);
+
       try {
         await spotifyApi.addTracksToPlaylist(playlistId, urisChunk);
-        console.log(`${urisChunk.length} tracks added to playlist ${playlistId}`);
+        console.log(
+          `${urisChunk.length} tracks added to playlist ${playlistId}`
+        );
       } catch (error) {
         console.error(`Error adding tracks to playlist`, error);
       }
