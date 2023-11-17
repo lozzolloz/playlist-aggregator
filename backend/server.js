@@ -89,9 +89,9 @@ app.get("/toptracks/:year", async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT INITCAP(title) as title, artists, MIN(uri) as uri, COUNT(*) as count
+      `SELECT UPPER(title) as title, artists, MIN(uri) as uri, COUNT(*) as count
       FROM plays${year}
-      GROUP BY INITCAP(title), artists
+      GROUP BY UPPER(title), artists
       ORDER BY count DESC, title;
       
     `
@@ -108,7 +108,7 @@ app.get("/toptracks/:year", async (req, res) => {
 app.get("/toptracksall", async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT INITCAP(title) as title, artists, MIN(uri) as uri, COUNT(*) as count
+      `SELECT UPPER(title) as title, artists, MIN(uri) as uri, COUNT(*) as count
       FROM (
           SELECT title, artists, uri
           FROM plays2019
@@ -133,7 +133,7 @@ app.get("/toptracksall", async (req, res) => {
           SELECT title, artists, uri
           FROM plays2023
       ) AS combined_plays
-      GROUP BY INITCAP(title), artists
+      GROUP BY UPPER(title), artists
       ORDER BY count DESC, title;
       
           `
@@ -215,12 +215,12 @@ app.get("/newtracks/:year", async (req, res) => {
   let lastyear = year - 1;
 
   try {
-    let query = `SELECT INITCAP(title) as title, artists, MIN(uri) as uri, COUNT(*) as count
+    let query = `SELECT UPPER(title) as title, artists, MIN(uri) as uri, COUNT(*) as count
       FROM plays${year}
       WHERE NOT EXISTS (
           SELECT 1
           FROM plays${lastyear}
-          WHERE INITCAP(plays${lastyear}.title) = INITCAP(plays${year}.title)
+          WHERE UPPER(plays${lastyear}.title) = UPPER(plays${year}.title)
           AND plays${lastyear}.artists = plays${year}.artists
       )`;
 
@@ -230,13 +230,13 @@ app.get("/newtracks/:year", async (req, res) => {
         AND NOT EXISTS (
           SELECT 1
           FROM plays${i}
-          WHERE INITCAP(plays${i}.title) = INITCAP(plays${year}.title)
+          WHERE UPPER(plays${i}.title) = UPPER(plays${year}.title)
           AND plays${i}.artists = plays${year}.artists
         )`;
     }
 
     query += `
-      GROUP BY INITCAP(title), artists
+      GROUP BY UPPER(title), artists
       ORDER BY count DESC, title;`;
 
     const result = await pool.query(query);
