@@ -6,6 +6,7 @@
   padding: 7px;
   margin: 10px;
   border-radius: 15px;
+  width: 525px
 }
 
 .data-updater{
@@ -19,27 +20,43 @@ align-items: center;
   flex-direction: row;;
 }
 
-.data-updater__button {
-  width: 150px;
+
+
+.data-updater__mode-button, .data-updater__mode-button--selected {
+  width: 135px;
+
 }
 
-.data-updater__button,
-.wrapped-button {
+
+.data-updater__button{
+  height: 40px;
+  width: 155px;
+}
+
+.data-updater__button, .data-updater__mode-button, .data-updater__mode-button--selected {
   padding: 10px;
   border-radius: 7px;
   cursor: pointer;
-  width: 150px;
+ 
 }
 
-.wrapped-button {
-  width: 165px;
+.data-updater__mode-button{
+  background-color: grey;
+  height: 40px;
 }
 
-.data-updater h3{
-  font-size: 14px;
-  font-weight: bold;
-  opacity: 0.9
+.data-updater__mode-button--selected{
+  background-color: #4CAF50;
+  color: black;
+  border: 3.5px solid;
+  border-color: black;
+  height: 50px;
+
 }
+
+
+
+
 
 .data-updater p{
   font-size: 12.5px;
@@ -52,5 +69,5 @@ align-items: center;
 
 .data-updater__subcontainer p,
 button {
-  margin: 7px 8px;
+  margin: 10px 8px;
 }

@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
 
 app.get("/playlists", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM playlists");
+    const result = await pool.query("SELECT * FROM playlists ORDER BY id DESC");
     res.json(result.rows);
   } catch (error) {
     console.error("Error executing search query:", error);

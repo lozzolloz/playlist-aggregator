@@ -1,10 +1,10 @@
 import "./App.css";
 import { useState, useEffect } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
-import TableComponent from "./components/ResultsTable/ResultsTable";
-import OptionButtons from "./components/OptionButtons/OptionButtons";
 import LoginButton from "./components/LoginButton/LoginButton";
 import DataUpdater from "./components/DataUpdater/DataUpdater";
+import PlaysViewer from "./components/PlaysViewer/PlaysViewer";
+import ImportView from "./components/ImportView/ImportView";
 
 let deployment = false;
 var urlServer = deployment === true ? "" : "http://localhost:5001";
@@ -40,6 +40,12 @@ function App() {
   const [hideWrapped, setHideWrapped] = useState(false);
   const [createdPlaylistId, setCreatedPlaylistId] = useState("");
   const [hideWrapped2, setHideWrapped2] = useState(false);
+  const [editMode, setEditMode] = useState("export");
+  const [allPlaylists, setAllPlaylists] = useState([]);
+
+  useEffect(() => {
+    console.log(getPlaysDisabled, pushPlaysDisabled);
+  }, [getPlaysDisabled, pushPlaysDisabled]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,9 +70,21 @@ function App() {
     try {
       const response = await fetch(`${urlServer}/playlists/${selectedYear}`);
       const data = await response.json();
+      console.log(data);
       setPlaylists(data);
     } catch (error) {
       console.error(`Error fetching playlists for ${selectedYear}:`, error);
+    }
+  };
+
+  const getAllPlaylists = async () => {
+    try {
+      const response = await fetch(`${urlServer}/playlists`);
+      const data = await response.json();
+      console.log(data);
+      setAllPlaylists(data);
+    } catch (error) {
+      console.error(`Error fetching playlists`, error);
     }
   };
 
@@ -290,18 +308,33 @@ function App() {
           addTracksToPlaylist={addTracksToPlaylist}
           createdPlaylistId={createdPlaylistId}
           searchResults={searchResults}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          getAllPlaylists={getAllPlaylists}
         />
       )}
-      <OptionButtons
-        year={year}
-        setYear={setYear}
-        term={term}
-        setTerm={setTerm}
-        years={years}
-        terms={terms}
-        hideOptions={hideOptions}
-      />
-      <TableComponent data={searchResults} />
+
+      {editMode === "export" && (
+        <div>
+          <PlaysViewer
+            year={year}
+            setYear={setYear}
+            term={term}
+            setTerm={setTerm}
+            years={years}
+            terms={terms}
+            hideOptions={hideOptions}
+            searchResults={searchResults}
+          />
+        </div>
+      )}
+
+      {editMode === "import" && (
+        <div>
+          <ImportView allPlaylists={allPlaylists} />
+          
+        </div>
+      )}
     </div>
   );
 }

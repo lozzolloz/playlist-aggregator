@@ -1,0 +1,33 @@
+.playlists-table table{
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid black;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background-color: #efefef;
+ 
+}
+
+.playlists-table td, .playlists-table th {
+    padding: 6px 18px;
+    border: 1px solid grey;
+
+  }
+
+  .playlists-table td.position{
+        text-align: center;
+        font-weight: bold;
+  }
+
+  .playlists-table td.count{
+    text-align: center;
+  }
+
+  .id-column{
+    font-weight: bold;
+  }
+
+  .uri-column{
+    text-align: center;
+  }

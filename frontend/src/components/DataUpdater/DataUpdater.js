@@ -18,6 +18,9 @@ export default function DataUpdater({
   addTracksToPlaylist,
   createdPlaylistId,
   searchResults,
+  editMode,
+  setEditMode,
+  getAllPlaylists
 }) {
   return (
     <div className="data-updater">
@@ -29,62 +32,86 @@ export default function DataUpdater({
         </a>
       </div>
       <div className="data-updater__subcontainer">
-        <h3>update 2023 playlist data</h3>
-
         <div>
           <button
-            className="data-updater__button"
-            onClick={() => {
-              getPlaylists(2023);
-              setGetPlaysDisabled(false);
-            }}
+            className={
+              "data-updater__mode-button" +
+              (editMode === "export" ? "--selected" : "")
+            }
+            onClick={() => setEditMode("export")}
           >
-            check new playlists
+            create Wrapped
           </button>
           <button
-            className="data-updater__button"
+            className={
+              "data-updater__mode-button" +
+              (editMode === "import" ? "--selected" : "")
+            }
             onClick={() => {
-              getPlays(2023);
-              setPushPlaysDisabled(false);
+              getAllPlaylists();
+              setEditMode("import");
             }}
-            disabled={getPlaysDisabled}
           >
-            update play counts
-          </button>
-          <button
-            className="data-updater__button"
-            onClick={() => pushPlays(2023)}
-            disabled={pushPlaysDisabled}
-          >
-            push to database
+            import new plays
           </button>
         </div>
 
-        <h3>create new Wrapped playlist</h3>
+        {editMode === "export" && (
+          <div>
+            <button
+              className="data-updater__button"
+              disabled={hideWrapped}
+              onClick={() =>
+                createPlaylist(userId, {
+                  name: `GIRLS NIGHT OUT WRAPPED: ${term} ${year}`,
+                  public: false,
+                })
+              }
+            >
+              create blank playlist
+            </button>
+            <button
+              className="data-updater__button"
+              disabled={hideWrapped2}
+              onClick={() =>
+                addTracksToPlaylist(createdPlaylistId, searchResults)
+              }
+            >
+              add tracks to playlist
+            </button>
+          </div>
+        )}
 
-        <div>
-          <button
-            className="wrapped-button"
-            disabled={hideWrapped}
-            onClick={() =>
-              createPlaylist(userId, {
-                name: `GIRLS NIGHT OUT WRAPPED: ${term} ${year}`,
-                public: false,
-              })
-            }
-          >
-            create blank playlist
-          </button>
-          <button
-            className="wrapped-button"
-            disabled={hideWrapped2}
-            onClick={() =>
-              addTracksToPlaylist(createdPlaylistId, searchResults)
-            }
-          >
-            add tracks to playlist
-          </button>
-        </div>
+        {editMode === "import" && (
+          <div>
+            <button
+              className="data-updater__button"
+              onClick={() => {
+                getPlaylists(2023);
+                setGetPlaysDisabled(false);
+              }}
+            >
+              check new playlists
+            </button>
+            <button
+              className="data-updater__button"
+              onClick={() => {
+                getPlays(2023);
+                setPushPlaysDisabled(false);
+              }}
+              disabled={getPlaysDisabled}
+            >
+              update play counts
+            </button>
+            <button
+              className="data-updater__button"
+              onClick={() => pushPlays(2023)}
+              disabled={pushPlaysDisabled}
+            >
+              push to database
+            </button>
+          </div>
+        )}
         <a
           href="https://api.elephantsql.com/console/2bcf94cf-f4be-4b37-88a5-710bc55c7738/browser"
           target="_blank"
