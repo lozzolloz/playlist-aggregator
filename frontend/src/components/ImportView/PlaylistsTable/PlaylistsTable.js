@@ -13,9 +13,9 @@ export default function PlaylistsTable({ allPlaylists }) {
           </tr>
         </thead>
         <tbody>
-          {allPlaylists.map((playlist) => (
+          {allPlaylists.map((playlist, index) => (
             <tr key={playlist.id}>
-            <td className='id-column'>{playlist.id}</td>
+            <td className='id-column'>{allPlaylists.length - index}</td>
               <td>{playlist.year}</td>
               <td>{playlist.name}</td>
               <td className='uri-column'>{playlist.uri}</td>
