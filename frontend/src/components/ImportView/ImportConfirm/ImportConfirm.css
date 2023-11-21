@@ -1,0 +1,25 @@
+.import-confirm {
+  background-color: darkgrey;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 7px;
+  margin: 10px;
+  border-radius: 15px;
+  width: 440px;
+  height: 160px;
+}
+
+.import-confirm p {
+  font-weight: bold;
+  text-align: center;
+}
+
+.import-confirm button {
+  height: 40px;
+  width: 160px;
+  padding: 10px;
+  border-radius: 7px;
+  cursor: pointer;
+}

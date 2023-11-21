@@ -42,6 +42,11 @@ function App() {
   const [hideWrapped2, setHideWrapped2] = useState(false);
   const [editMode, setEditMode] = useState("export");
   const [allPlaylists, setAllPlaylists] = useState([]);
+  const [inputTerm, setInputTerm] = useState("");
+  const [inputYear, setInputYear] = useState(2024);
+  const [newPlaylistInfo, setNewPlaylistInfo] = useState(null);
+  const [importError, setImportError] = useState(false);
+  const [confirmationPageView, setConfirmationPageView] = useState(false);
 
   useEffect(() => {
     console.log(getPlaysDisabled, pushPlaysDisabled);
@@ -133,6 +138,25 @@ function App() {
     }
   };
 
+  const pushPlaylist = async (newPlaylistInfo, inputYear) => {
+    try {
+      await fetch(`${urlServer}/addplaylist`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Set the content type to JSON
+        },
+        body: JSON.stringify({
+          name: newPlaylistInfo.name,
+          year: inputYear,
+          uri: removePrefixes(newPlaylistInfo.uri),
+        }),
+      });
+    } catch (error) {
+      console.error(`Error pushing playlist`, error);
+    }
+  };
+  
+
   const getPlays = async (selectedYear) => {
     try {
       setPlays([]); // Clear the plays array before fetching new plays
@@ -170,6 +194,25 @@ function App() {
       } catch (error) {
         console.error(`Error adding tracks to playlist`, error);
       }
+    }
+  };
+
+  function removePrefixes(inputString) {
+    const parts = inputString.split(":");
+    const result = parts[parts.length - 1];
+    return result;
+  }
+  const getNewPlaylistInfo = async (uri) => {
+    let playlistId = removePrefixes(uri);
+    try {
+      const data = await spotifyApi.getPlaylist(playlistId);
+      setNewPlaylistInfo(data);
+      setConfirmationPageView(true);
+      setImportError(false);
+    } catch (error) {
+      setImportError(true);
+
+      console.error(`Playlist not found with ID ${playlistId}`, error);
     }
   };
 
@@ -285,6 +328,10 @@ function App() {
     setCreatedPlaylistId("");
   }, [year, term]);
 
+  useEffect(() => {
+    console.log(newPlaylistInfo);
+  }, [newPlaylistInfo]);
+
   return (
     <div id="app">
       {!loggedIn && <LoginButton />}
@@ -331,8 +378,22 @@ function App() {
 
       {editMode === "import" && (
         <div>
-          <ImportView allPlaylists={allPlaylists} />
-          
+          <ImportView
+            allPlaylists={allPlaylists}
+            inputTerm={inputTerm}
+            setInputTerm={setInputTerm}
+            inputYear={inputYear}
+            setInputYear={setInputYear}
+            getNewPlaylistInfo={getNewPlaylistInfo}
+            importError={importError}
+            setImportError={setImportError}
+            confirmationPageView={confirmationPageView}
+            setConfirmationPageView={setConfirmationPageView}
+            newPlaylistInfo={newPlaylistInfo}
+            setNewPlaylistInfo={setNewPlaylistInfo}
+            pushPlaylist={pushPlaylist}
+            getAllPlaylists={getAllPlaylists}
+          />
         </div>
       )}
     </div>

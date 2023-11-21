@@ -10,7 +10,8 @@ export default function PlaysViewer(
         years,
         terms,
         hideOptions,
-        searchResults
+        searchResults,
+      
     }
 ){
 return (<div>

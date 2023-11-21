@@ -54,6 +54,21 @@ app.get("/playlists/:year", async (req, res) => {
   }
 });
 
+app.post("/addplaylist", async (req, res) => {
+  const { name, year, uri } = req.body;
+
+  try {
+    const result = await pool.query(
+      "INSERT INTO playlists (name, year, uri) VALUES ($1, $2, $3);",
+      [name, year, uri]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error posting to database", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // Add plays to plays[year] table
 app.post("/addplay", async (req, res) => {
   const { title, artists, uri, playYear } = req.body;
@@ -246,7 +261,6 @@ app.get("/newtracks/:year", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 
 // find new artists
 

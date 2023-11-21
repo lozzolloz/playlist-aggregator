@@ -7,7 +7,8 @@
     padding: 7px;
     margin: 10px;
     border-radius: 15px;
-    width: 440px
+    width: 440px;
+    height: 160px;
 }
 
 .import-interface__input{
@@ -32,7 +33,26 @@
     border-radius: 7px;
   }
 
-  .import-interface p{
+  .add-playlist-heading{
     font-size: 15.5px;
     opacity: 0.9
+  }
+
+  .year{
+    height: 35px;
+    width: 85px;
+    padding: 0px 15px;
+    border-radius: 7px;
+  }
+
+  .import-interface__error-true, 
+  .import-interface__error-false{
+    font-size: 14px;
+    width: 200px;
+    color: darkred;
+    text-align: center;
+  }
+
+  .import-interface__error-false{
+    visibility: hidden;
   }
