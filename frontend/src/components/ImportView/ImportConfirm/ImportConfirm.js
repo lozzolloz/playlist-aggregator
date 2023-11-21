@@ -8,8 +8,8 @@ export default function ImportConfirm({
   pushPlaylist,
   getAllPlaylists,
 }) {
-  function handleConfirmClick() {
-    pushPlaylist(newPlaylistInfo, inputYear);
+  async function handleConfirmClick() {
+    await pushPlaylist(newPlaylistInfo, inputYear);
     setConfirmationPageView(false);
     setNewPlaylistInfo(null);
     getAllPlaylists();

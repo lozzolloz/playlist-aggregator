@@ -7,6 +7,7 @@ export default function PlaylistsTable({ allPlaylists }) {
         <thead>
           <tr>
           <th></th>
+            <th>year</th>
             <th>name</th>
             <th>URI</th>
           </tr>
@@ -15,6 +16,7 @@ export default function PlaylistsTable({ allPlaylists }) {
           {allPlaylists.map((playlist) => (
             <tr key={playlist.id}>
             <td className='id-column'>{playlist.id}</td>
+              <td>{playlist.year}</td>
               <td>{playlist.name}</td>
               <td className='uri-column'>{playlist.uri}</td>
 
