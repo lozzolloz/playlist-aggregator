@@ -31,3 +31,7 @@
   .uri-column{
     text-align: center;
   }
+
+  .highlighted-row{
+    color: red;
+  }

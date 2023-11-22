@@ -70,18 +70,19 @@ app.post("/addplaylist", async (req, res) => {
 });
 
 // Add plays to plays[year] table
-app.post("/addplay", async (req, res) => {
-  const { title, artists, uri, playYear } = req.body;
+app.post("/addplay/:playYear", async (req, res) => {
+  const { title, artists, uri, sourcePlaylist } = req.body;
+  const { playYear } = req.params;
 
   try {
     await pool.query(
-      `INSERT INTO plays${playYear} (title, artists, uri, playYear) VALUES ($1, $2, $3, $4)`,
-      [title, artists, uri, playYear]
+      `INSERT INTO plays${playYear} (title, artists, uri, sourcePlaylist) VALUES ($1, $2, $3, $4)`,
+      [title, artists, uri, sourcePlaylist]
     );
     res.json({ message: "play added successfully" });
   } catch (error) {
     console.error("Error adding name:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: `Internal Server Error: ${error.message}` });
   }
 });
 
@@ -152,6 +153,32 @@ app.get("/toptracksall", async (req, res) => {
       ORDER BY count DESC, title;
       
           `
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error executing search query:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//all playlists in plays
+
+app.get("/allplaylistsinplays", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT DISTINCT sourcePlaylist
+      FROM (
+        SELECT sourcePlaylist FROM plays2019
+        UNION ALL
+        SELECT sourcePlaylist FROM plays2020
+        UNION ALL
+        SELECT sourcePlaylist FROM plays2021
+        UNION ALL
+        SELECT sourcePlaylist FROM plays2022
+        UNION ALL
+        SELECT sourcePlaylist FROM plays2023
+      ) AS combinedTable;
+        `
     );
     res.json(result.rows);
   } catch (error) {

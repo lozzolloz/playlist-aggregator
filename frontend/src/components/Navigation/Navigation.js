@@ -6,6 +6,7 @@ export default function Navigation({
   editMode,
   setEditMode,
   getAllPlaylists,
+  getAllPlaylistsInPlays
 }) {
   return (
     <div>
@@ -35,6 +36,7 @@ export default function Navigation({
                 "nav-button" + (editMode === "import" ? "--selected" : "")
               }
               onClick={() => {
+                getAllPlaylistsInPlays();
                 getAllPlaylists();
                 setEditMode("import");
               }}

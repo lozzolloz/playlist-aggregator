@@ -8,6 +8,7 @@ import ImportPlaylist from "./components/ImportPlaylist/ImportPlaylist";
 import PlaylistsTable from "./components/PlaylistsTable/PlaylistsTable";
 import PlaySearchOptions from "./components/PlaySearchOptions/PlaySearchOptions";
 import CreatePlaylist from "./components/CreatePlaylist/CreatePlaylist";
+import ImportPlays from "./components/ImportPlays/ImportPlays";
 
 let deployment = false;
 var urlServer = deployment === true ? "" : "http://localhost:5001";
@@ -29,6 +30,7 @@ function App() {
   const [spotifyToken, setSpotifyToken] = useState("");
   const [playlists, setPlaylists] = useState([]);
   const [plays, setPlays] = useState([]);
+  const [allPlaylistsInPlays, setAllPlaylistsInPlays] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState("");
@@ -46,7 +48,7 @@ function App() {
   const [editMode, setEditMode] = useState("export");
   const [allPlaylists, setAllPlaylists] = useState([]);
   const [inputTerm, setInputTerm] = useState("");
-  const [inputYear, setInputYear] = useState(2024);
+  const [inputYear, setInputYear] = useState(2023);
   const [newPlaylistInfo, setNewPlaylistInfo] = useState(null);
   const [importError, setImportError] = useState(false);
   const [importPlaylistConfirmView, setImportPlaylistConfirmView] =
@@ -87,7 +89,7 @@ function App() {
             (artist) => artist.name
           ),
           uri: data.tracks.items[i].track.uri,
-          playYear: playlist.year,
+          sourcePlaylist: playlist.uri
         });
       }
 
@@ -170,7 +172,7 @@ function App() {
         method: "POST",
       });
       for (let i = 0; i < plays.length; i++) {
-        const response = await fetch(`${urlServer}/addplay`, {
+        const response = await fetch(`${urlServer}/addplay/${selectedYear}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -278,6 +280,17 @@ function App() {
     }
   }
 
+  async function getAllPlaylistsInPlays() {
+   
+    try {
+      const response = await fetch('http://localhost:5001/allplaylistsinplays');
+      const data = await response.json();
+      setAllPlaylistsInPlays(data);
+    } catch (error) {
+      console.error(`Error fetching data`, error);
+    }
+  }
+
   //effects
 
   useEffect(() => {
@@ -322,6 +335,15 @@ function App() {
     setCreatedPlaylistId("");
   }, [year, term]);
 
+
+  useEffect(() => {
+    console.log(allPlaylists);
+  } , [allPlaylists])
+
+  useEffect(() => {
+    console.log(allPlaylistsInPlays);
+  } , [allPlaylistsInPlays])
+
   return (
     <div id="app">
       <Navigation
@@ -330,32 +352,8 @@ function App() {
         editMode={editMode}
         setEditMode={setEditMode}
         getAllPlaylists={getAllPlaylists}
+        getAllPlaylistsInPlays={getAllPlaylistsInPlays}
       />
-
-      {/* {loggedIn && (
-        <DataUpdater
-          userName={userName}
-          getPlaylists={getPlaylists}
-          setGetPlaysDisabled={setGetPlaysDisabled}
-          getPlays={getPlays}
-          setPushPlaysDisabled={setPushPlaysDisabled}
-          pushPlays={pushPlays}
-          getPlaysDisabled={getPlaysDisabled}
-          pushPlaysDisabled={pushPlaysDisabled}
-          hideWrapped={hideWrapped}
-          hideWrapped2={hideWrapped2}
-          createPlaylist={createPlaylist}
-          userId={userId}
-          term={term}
-          year={year}
-          addTracksToPlaylist={addTracksToPlaylist}
-          createdPlaylistId={createdPlaylistId}
-          searchResults={searchResults}
-          editMode={editMode}
-          setEditMode={setEditMode}
-          getAllPlaylists={getAllPlaylists}
-        />
-      )} */}
 
       {editMode === "export" && (
         <div>
@@ -390,23 +388,7 @@ function App() {
 
       {editMode === "import" && (
         <div>
-          {/* <ImportView
-            allPlaylists={allPlaylists}
-            inputTerm={inputTerm}
-            setInputTerm={setInputTerm}
-            inputYear={inputYear}
-            setInputYear={setInputYear}
-            getNewPlaylistInfo={getNewPlaylistInfo}
-            importError={importError}
-            setImportError={setImportError}
-            importPlaylistConfirmView={importPlaylistConfirmView}
-            setImportPlaylistConfirmView={setImportPlaylistConfirmView}
-            newPlaylistInfo={newPlaylistInfo}
-            setNewPlaylistInfo={setNewPlaylistInfo}
-            pushPlaylist={pushPlaylist}
-            getAllPlaylists={getAllPlaylists}
-          /> */}
-
+    
           <ImportPlaylist
             inputTerm={inputTerm}
             setInputTerm={setInputTerm}
@@ -421,7 +403,18 @@ function App() {
             setNewPlaylistInfo={setNewPlaylistInfo}
             getAllPlaylists={getAllPlaylists}
           />
-          <PlaylistsTable allPlaylists={allPlaylists} />
+
+          <ImportPlays
+          getPlaylists={getPlaylists}
+          getPlays={getPlays}
+          pushPlays={pushPlays}
+          getPlaysDisabled={getPlaysDisabled}
+          setGetPlaysDisabled={setGetPlaysDisabled}
+          pushPlaysDisabled={pushPlaysDisabled}
+          setPushPlaysDisabled={setPushPlaysDisabled}
+           />
+
+          <PlaylistsTable allPlaylists={allPlaylists} allPlaylistsInPlays={allPlaylistsInPlays} />
         </div>
       )}
     </div>

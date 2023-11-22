@@ -49,7 +49,8 @@ export default function ImportPlaylist({
           <input placeholder="URI" onChange={handleInputTermChange}></input>
 
           <select className="year" onChange={handleInputYearChange}>
-            <option value="2024">2024</option>
+            {/* <option value="2024">2024</option> */}
+            {/* remember to update inputYear initial state in App.js if updating */}
             <option value="2023">2023</option>
             <option value="2022">2022</option>
             <option value="2021">2021</option>
