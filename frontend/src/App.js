@@ -1,10 +1,13 @@
 import "./App.css";
 import { useState, useEffect } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
-import LoginButton from "./components/LoginButton/LoginButton";
-import DataUpdater from "./components/DataUpdater/DataUpdater";
-import PlaysViewer from "./components/PlaysViewer/PlaysViewer";
-import ImportView from "./components/ImportView/ImportView";
+import Navigation from "./components/Navigation/Navigation";
+import DataUpdater from "./components/UserInterface/UserInterface";
+import PlaysTable from "./components/PlaysTable/PlaysTable";
+import ImportPlaylist from "./components/ImportPlaylist/ImportPlaylist";
+import PlaylistsTable from "./components/PlaylistsTable/PlaylistsTable";
+import PlaySearchOptions from "./components/PlaySearchOptions/PlaySearchOptions";
+import CreatePlaylist from "./components/CreatePlaylist/CreatePlaylist";
 
 let deployment = false;
 var urlServer = deployment === true ? "" : "http://localhost:5001";
@@ -30,7 +33,7 @@ function App() {
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState("");
   const years = [2019, 2020, 2021, 2022, 2023];
-  const terms = ["top tracks", "top artists", "new tracks", "new artists"];
+  const terms = ["top tracks", "new tracks", "top artists", "new artists"];
   const [getPlaysDisabled, setGetPlaysDisabled] = useState(true);
   const [pushPlaysDisabled, setPushPlaysDisabled] = useState(true);
   const [year, setYear] = useState(2019);
@@ -46,11 +49,10 @@ function App() {
   const [inputYear, setInputYear] = useState(2024);
   const [newPlaylistInfo, setNewPlaylistInfo] = useState(null);
   const [importError, setImportError] = useState(false);
-  const [confirmationPageView, setConfirmationPageView] = useState(false);
-
-  useEffect(() => {
-    console.log(getPlaysDisabled, pushPlaysDisabled);
-  }, [getPlaysDisabled, pushPlaysDisabled]);
+  const [importPlaylistConfirmView, setImportPlaylistConfirmView] =
+    useState(false);
+  const [createPlaylistConfirmView, setCreatePlaylistConfirmView] =
+    useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,27 +73,7 @@ function App() {
     fetchData();
   }, []);
 
-  const getPlaylists = async (selectedYear) => {
-    try {
-      const response = await fetch(`${urlServer}/playlists/${selectedYear}`);
-      const data = await response.json();
-      console.log(data);
-      setPlaylists(data);
-    } catch (error) {
-      console.error(`Error fetching playlists for ${selectedYear}:`, error);
-    }
-  };
-
-  const getAllPlaylists = async () => {
-    try {
-      const response = await fetch(`${urlServer}/playlists`);
-      const data = await response.json();
-      console.log(data);
-      setAllPlaylists(data);
-    } catch (error) {
-      console.error(`Error fetching playlists`, error);
-    }
-  };
+  // spotify API calls
 
   const getPlaylistTracks = async (playlist) => {
     try {
@@ -115,12 +97,78 @@ function App() {
     }
   };
 
+  const createPlaylist = async (userId, options) => {
+    try {
+      const data = await spotifyApi.createPlaylist(userId, options);
+      console.log(`Playlist created ${data.id} ${options.name}`);
+      setCreatedPlaylistId(data.id);
+    } catch (error) {
+      console.error(`Error creating playlist`, error);
+    }
+  };
+
+  const addTracksToPlaylist = async (playlistId, searchResults) => {
+    const chunkSize = 100;
+
+    for (let i = 0; i < searchResults.length; i += chunkSize) {
+      const urisChunk = searchResults
+        .slice(i, i + chunkSize)
+        .map((result) => result.uri);
+
+      try {
+        await spotifyApi.addTracksToPlaylist(playlistId, urisChunk);
+        console.log(
+          `${urisChunk.length} tracks added to playlist ${playlistId}`
+        );
+      } catch (error) {
+        console.error(`Error adding tracks to playlist`, error);
+      }
+    }
+  };
+
+  const getNewPlaylistInfo = async (uri) => {
+    let playlistId = removePrefixes(uri);
+    try {
+      const data = await spotifyApi.getPlaylist(playlistId);
+      setNewPlaylistInfo(data);
+      setImportPlaylistConfirmView(true);
+      setImportError(false);
+    } catch (error) {
+      setImportError(true);
+
+      console.error(`Playlist not found with ID ${playlistId}`, error);
+    }
+  };
+
+  // my database calls
+
+  const getPlaylists = async (selectedYear) => {
+    try {
+      const response = await fetch(`${urlServer}/playlists/${selectedYear}`);
+      const data = await response.json();
+      console.log(data);
+      setPlaylists(data);
+    } catch (error) {
+      console.error(`Error fetching playlists for ${selectedYear}:`, error);
+    }
+  };
+
+  const getAllPlaylists = async () => {
+    try {
+      const response = await fetch(`${urlServer}/playlists`);
+      const data = await response.json();
+      console.log(data);
+      setAllPlaylists(data);
+    } catch (error) {
+      console.error(`Error fetching playlists`, error);
+    }
+  };
+
   const pushPlays = async (selectedYear) => {
     try {
       await fetch(`${urlServer}/removeallplays/${selectedYear}`, {
         method: "POST",
       });
-
       for (let i = 0; i < plays.length; i++) {
         const response = await fetch(`${urlServer}/addplay`, {
           method: "POST",
@@ -155,7 +203,6 @@ function App() {
       console.error(`Error pushing playlist`, error);
     }
   };
-  
 
   const getPlays = async (selectedYear) => {
     try {
@@ -168,69 +215,11 @@ function App() {
     }
   };
 
-  const createPlaylist = async (userId, options) => {
-    try {
-      const data = await spotifyApi.createPlaylist(userId, options);
-      console.log(`Playlist created ${data.id} ${options.name}`);
-      setCreatedPlaylistId(data.id);
-    } catch (error) {
-      console.error(`Error creating playlist`, error);
-    }
-  };
-
-  const addTracksToPlaylist = async (playlistId, searchResults) => {
-    const chunkSize = 100;
-
-    for (let i = 0; i < searchResults.length; i += chunkSize) {
-      const urisChunk = searchResults
-        .slice(i, i + chunkSize)
-        .map((result) => result.uri);
-
-      try {
-        await spotifyApi.addTracksToPlaylist(playlistId, urisChunk);
-        console.log(
-          `${urisChunk.length} tracks added to playlist ${playlistId}`
-        );
-      } catch (error) {
-        console.error(`Error adding tracks to playlist`, error);
-      }
-    }
-  };
-
   function removePrefixes(inputString) {
     const parts = inputString.split(":");
     const result = parts[parts.length - 1];
     return result;
   }
-  const getNewPlaylistInfo = async (uri) => {
-    let playlistId = removePrefixes(uri);
-    try {
-      const data = await spotifyApi.getPlaylist(playlistId);
-      setNewPlaylistInfo(data);
-      setConfirmationPageView(true);
-      setImportError(false);
-    } catch (error) {
-      setImportError(true);
-
-      console.error(`Playlist not found with ID ${playlistId}`, error);
-    }
-  };
-
-  useEffect(() => {
-    console.log(playlists);
-  }, [playlists]);
-
-  useEffect(() => {
-    console.log(plays);
-  }, [plays]);
-
-  useEffect(() => {
-    if (createdPlaylistId === "") {
-      setHideWrapped2(true);
-    } else {
-      setHideWrapped2(false);
-    }
-  }, [createdPlaylistId]);
 
   async function getSearchResults(year, term) {
     let fetchUrl = "";
@@ -289,6 +278,16 @@ function App() {
     }
   }
 
+  //effects
+
+  useEffect(() => {
+    if (createdPlaylistId === "") {
+      setHideWrapped2(true);
+    } else {
+      setHideWrapped2(false);
+    }
+  }, [createdPlaylistId]);
+
   useEffect(() => {
     if (year === "all" || year === 2019) {
       setHideOptions(true);
@@ -302,10 +301,6 @@ function App() {
   }, [year, term]);
 
   useEffect(() => {
-    console.log(searchResults);
-  }, [searchResults]);
-
-  useEffect(() => {
     if (term === "new tracks" || term === "top tracks") {
       setHideWrapped(false);
     }
@@ -314,7 +309,6 @@ function App() {
     }
   }, [term]);
 
-  //correct hidden options if change to year where they are hidden
   useEffect(() => {
     if (hideOptions === true && term === "new tracks") {
       setTerm("top tracks");
@@ -328,15 +322,17 @@ function App() {
     setCreatedPlaylistId("");
   }, [year, term]);
 
-  useEffect(() => {
-    console.log(newPlaylistInfo);
-  }, [newPlaylistInfo]);
-
   return (
     <div id="app">
-      {!loggedIn && <LoginButton />}
+      <Navigation
+        loggedIn={loggedIn}
+        userName={userName}
+        editMode={editMode}
+        setEditMode={setEditMode}
+        getAllPlaylists={getAllPlaylists}
+      />
 
-      {loggedIn && (
+      {/* {loggedIn && (
         <DataUpdater
           userName={userName}
           getPlaylists={getPlaylists}
@@ -359,11 +355,11 @@ function App() {
           setEditMode={setEditMode}
           getAllPlaylists={getAllPlaylists}
         />
-      )}
+      )} */}
 
       {editMode === "export" && (
         <div>
-          <PlaysViewer
+          <PlaySearchOptions
             year={year}
             setYear={setYear}
             term={term}
@@ -371,14 +367,30 @@ function App() {
             years={years}
             terms={terms}
             hideOptions={hideOptions}
-            searchResults={searchResults}
+            setCreatePlaylistConfirmView={setCreatePlaylistConfirmView}
           />
+
+          {loggedIn && (term === "top tracks" || term === "new tracks") && (
+            <CreatePlaylist
+              createPlaylist={createPlaylist}
+              userId={userId}
+              term={term}
+              year={year}
+              addTracksToPlaylist={addTracksToPlaylist}
+              createdPlaylistId={createdPlaylistId}
+              searchResults={searchResults}
+              createPlaylistConfirmView={createPlaylistConfirmView}
+              setCreatePlaylistConfirmView={setCreatePlaylistConfirmView}
+            />
+          )}
+
+          <PlaysTable searchResults={searchResults} />
         </div>
       )}
 
       {editMode === "import" && (
         <div>
-          <ImportView
+          {/* <ImportView
             allPlaylists={allPlaylists}
             inputTerm={inputTerm}
             setInputTerm={setInputTerm}
@@ -387,13 +399,29 @@ function App() {
             getNewPlaylistInfo={getNewPlaylistInfo}
             importError={importError}
             setImportError={setImportError}
-            confirmationPageView={confirmationPageView}
-            setConfirmationPageView={setConfirmationPageView}
+            importPlaylistConfirmView={importPlaylistConfirmView}
+            setImportPlaylistConfirmView={setImportPlaylistConfirmView}
             newPlaylistInfo={newPlaylistInfo}
             setNewPlaylistInfo={setNewPlaylistInfo}
             pushPlaylist={pushPlaylist}
             getAllPlaylists={getAllPlaylists}
+          /> */}
+
+          <ImportPlaylist
+            inputTerm={inputTerm}
+            setInputTerm={setInputTerm}
+            setInputYear={setInputYear}
+            getNewPlaylistInfo={getNewPlaylistInfo}
+            importError={importError}
+            importPlaylistConfirmView={importPlaylistConfirmView}
+            setImportPlaylistConfirmView={setImportPlaylistConfirmView}
+            pushPlaylist={pushPlaylist}
+            newPlaylistInfo={newPlaylistInfo}
+            inputYear={inputYear}
+            setNewPlaylistInfo={setNewPlaylistInfo}
+            getAllPlaylists={getAllPlaylists}
           />
+          <PlaylistsTable allPlaylists={allPlaylists} />
         </div>
       )}
     </div>

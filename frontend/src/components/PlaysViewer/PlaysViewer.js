@@ -1,5 +1,5 @@
-import OptionButtons from "./OptionButtons/OptionButtons";
-import PlaysTable from "./PlaysTable/PlaysTable";
+import OptionButtons from "../PlaySearchOptions/PlaySearchOptions";
+import PlaysTable from "../PlaysTable/PlaysTable";
 
 export default function PlaysViewer(
     {

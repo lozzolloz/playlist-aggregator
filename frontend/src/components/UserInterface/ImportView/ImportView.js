@@ -1,5 +1,5 @@
-import ImportInterface from "./ImportInterface/ImportInterface";
-import PlaylistsTable from "./PlaylistsTable/PlaylistsTable";
+import ImportInterface from "../../ImportPlaylist/ImportPlaylist";
+import PlaylistsTable from "../../PlaylistsTable/PlaylistsTable";
 import ImportConfirm from "./ImportConfirm/ImportConfirm";
 import "./ImportView.css";
 

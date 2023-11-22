@@ -1,7 +1,7 @@
 import React from "react";
 import "./PlaysTable.css";
 
-const TableComponent = ({ searchResults }) => {
+export default function PlaysTable({ searchResults }) {
   // Get unique headers excluding "uri"
   const headers = [
     ...new Set(
@@ -56,6 +56,4 @@ const TableComponent = ({ searchResults }) => {
       </table>
     </div>
   );
-};
-
-export default TableComponent;
+}

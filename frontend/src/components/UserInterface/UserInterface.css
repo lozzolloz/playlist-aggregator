@@ -4,7 +4,6 @@
   align-items: center;
   background-color: lightgreen;
   padding: 7px;
-  margin: 10px;
   border-radius: 15px;
   width: 525px
 }
@@ -13,6 +12,17 @@
   display: flex;
   flex-direction: column;
 align-items: center;
+margin: 10px;
+}
+
+.mode-buttons-div{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-end;
+  width: 525px;
+  margin-top: 10px;
+
 }
 
 .loggedin-logout{
@@ -23,35 +33,37 @@ align-items: center;
 
 
 .data-updater__mode-button, .data-updater__mode-button--selected {
-  width: 135px;
-
+  width: 130px;
+  border-radius: 7px 7px 0px 0;
 }
 
 
 .data-updater__button{
   height: 40px;
   width: 155px;
+  border-radius: 7px;
 }
 
 .data-updater__button, .data-updater__mode-button, .data-updater__mode-button--selected {
   padding: 10px;
-  border-radius: 7px;
+
   cursor: pointer;
  
 }
 
 .data-updater__mode-button{
   background-color: grey;
-  height: 40px;
+  height: 37px;
+  margin: 0px
 }
 
 .data-updater__mode-button--selected{
-  background-color: #4CAF50;
+  background-color: #efefef;
   color: black;
-  border: 3.5px solid;
+  border: 2.5px solid;
   border-color: black;
-  height: 50px;
-
+  height: 40px;
+  margin: 0px
 }
 
 

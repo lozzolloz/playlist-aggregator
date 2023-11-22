@@ -1,0 +1,10 @@
+.data-updater__subcontainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: lightgreen;
+    padding: 7px;
+    border-radius: 15px;
+    width: 525px
+  }
+  

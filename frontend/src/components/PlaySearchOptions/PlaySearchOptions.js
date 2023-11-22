@@ -1,6 +1,6 @@
-import "./OptionButtons.css";
+import "./PlaySearchOptions.css";
 
-export default function OptionButtons({
+export default function PlaySearchOptions({
   year,
   setYear,
   term,
@@ -8,6 +8,7 @@ export default function OptionButtons({
   years,
   terms,
   hideOptions,
+  setCreatePlaylistConfirmView,
 }) {
   return (
     <div id="options-container">
@@ -15,7 +16,10 @@ export default function OptionButtons({
         {years.map((selectedYear) => (
           <button
             key={selectedYear}
-            onClick={() => setYear(selectedYear)}
+            onClick={() => {
+              setYear(selectedYear);
+              setCreatePlaylistConfirmView(false);
+            }}
             className={
               year === selectedYear
                 ? "option-button-selected"
@@ -27,7 +31,10 @@ export default function OptionButtons({
         ))}
         <button
           key={"all time"}
-          onClick={() => setYear("all")}
+          onClick={() => {
+            setYear("all");
+            setCreatePlaylistConfirmView(false);
+          }}
           className={
             year === "all"
               ? "option-button-selected"
