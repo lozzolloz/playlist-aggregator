@@ -1,21 +1,19 @@
 import OptionButtons from "../PlaySearchOptions/PlaySearchOptions";
-import PlaysTable from "../PlaysTable/PlaysTable";
+import PlaysTable from "../PlayCountsTable/PlayCountsTable";
 
-export default function PlaysViewer(
-    {
-        year,
-        setYear,
-        term,
-        setTerm,
-        years,
-        terms,
-        hideOptions,
-        searchResults,
-      
-    }
-){
-return (<div>
-     <OptionButtons
+export default function PlaysViewer({
+  year,
+  setYear,
+  term,
+  setTerm,
+  years,
+  terms,
+  hideOptions,
+  searchResults,
+}) {
+  return (
+    <div>
+      <OptionButtons
         year={year}
         setYear={setYear}
         term={term}
@@ -25,5 +23,6 @@ return (<div>
         hideOptions={hideOptions}
       />
       <PlaysTable searchResults={searchResults} />
-</div>)
+    </div>
+  );
 }

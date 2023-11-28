@@ -1,7 +1,7 @@
 import React from "react";
-import "./PlaysTable.css";
+import "./PlayCountsTable.css";
 
-export default function PlaysTable({ searchResults }) {
+export default function PlayCountsTable({ searchResults }) {
   // Get unique headers excluding "uri"
   const headers = [
     ...new Set(

@@ -2,13 +2,12 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import Navigation from "./components/Navigation/Navigation";
-import DataUpdater from "./components/UserInterface/UserInterface";
-import PlaysTable from "./components/PlaysTable/PlaysTable";
+import PlayCountsTable from "./components/PlayCountsTable/PlayCountsTable";
 import ImportPlaylist from "./components/ImportPlaylist/ImportPlaylist";
 import PlaylistsTable from "./components/PlaylistsTable/PlaylistsTable";
 import PlaySearchOptions from "./components/PlaySearchOptions/PlaySearchOptions";
 import CreatePlaylist from "./components/CreatePlaylist/CreatePlaylist";
-import ImportPlays from "./components/ImportPlays/ImportPlays";
+import ImportPlayCounts from "./components/ImportPlayCounts/ImportPlayCounts";
 
 let deployment = false;
 var urlServer = deployment === true ? "" : "http://localhost:5001";
@@ -55,6 +54,10 @@ function App() {
     useState(false);
   const [createPlaylistConfirmView, setCreatePlaylistConfirmView] =
     useState(false);
+  const [playCountImportPage, setPlayCountImportPage] = useState("home");
+  const [highlightedPlaylistsExist, setHighlightedPlaylistsExist] =
+    useState(false);
+  const [playlistsNotInPlays, setPlaylistsNotInPlays] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -89,7 +92,7 @@ function App() {
             (artist) => artist.name
           ),
           uri: data.tracks.items[i].track.uri,
-          sourcePlaylist: playlist.uri
+          sourcePlaylist: playlist.uri,
         });
       }
 
@@ -168,9 +171,9 @@ function App() {
 
   const pushPlays = async (selectedYear) => {
     try {
-      await fetch(`${urlServer}/removeallplays/${selectedYear}`, {
-        method: "POST",
-      });
+      // await fetch(`${urlServer}/removeallplays/${selectedYear}`, {
+      //   method: "POST",
+      // });
       for (let i = 0; i < plays.length; i++) {
         const response = await fetch(`${urlServer}/addplay/${selectedYear}`, {
           method: "POST",
@@ -209,8 +212,8 @@ function App() {
   const getPlays = async (selectedYear) => {
     try {
       setPlays([]); // Clear the plays array before fetching new plays
-      for (let i = 0; i < playlists.length; i++) {
-        await getPlaylistTracks(playlists[i]);
+      for (let i = 0; i < playlistsNotInPlays.length; i++) {
+        await getPlaylistTracks(playlistsNotInPlays[i]);
       }
     } catch (error) {
       console.error(`Error fetching plays for ${selectedYear}:`, error);
@@ -281,9 +284,8 @@ function App() {
   }
 
   async function getAllPlaylistsInPlays() {
-   
     try {
-      const response = await fetch('http://localhost:5001/allplaylistsinplays');
+      const response = await fetch("http://localhost:5001/allplaylistsinplays");
       const data = await response.json();
       setAllPlaylistsInPlays(data);
     } catch (error) {
@@ -335,14 +337,28 @@ function App() {
     setCreatedPlaylistId("");
   }, [year, term]);
 
+  useEffect(() => {
+    playlistsNotInPlays.length > 0
+      ? setHighlightedPlaylistsExist(true)
+      : setHighlightedPlaylistsExist(false);
+  }, [playlistsNotInPlays]);
 
   useEffect(() => {
-    console.log(allPlaylists);
-  } , [allPlaylists])
+    setPlaylistsNotInPlays(
+      allPlaylists.filter(
+        (playlist) =>
+          !allPlaylistsInPlays.some(
+            (item) => item.sourceplaylist === playlist.uri
+          )
+      )
+    );
+  }, [allPlaylists, allPlaylistsInPlays]);
 
   useEffect(() => {
-    console.log(allPlaylistsInPlays);
-  } , [allPlaylistsInPlays])
+    console.log("allPlaylists", allPlaylists);
+    console.log("allPlaylistsInPlays", allPlaylistsInPlays);
+    console.log("playlistsNotInPlays", playlistsNotInPlays);
+  }, [allPlaylists, allPlaylistsInPlays, playlistsNotInPlays]);
 
   return (
     <div id="app">
@@ -382,13 +398,12 @@ function App() {
             />
           )}
 
-          <PlaysTable searchResults={searchResults} />
+          <PlayCountsTable searchResults={searchResults} />
         </div>
       )}
 
       {editMode === "import" && (
         <div>
-    
           <ImportPlaylist
             inputTerm={inputTerm}
             setInputTerm={setInputTerm}
@@ -404,17 +419,24 @@ function App() {
             getAllPlaylists={getAllPlaylists}
           />
 
-          <ImportPlays
-          getPlaylists={getPlaylists}
-          getPlays={getPlays}
-          pushPlays={pushPlays}
-          getPlaysDisabled={getPlaysDisabled}
-          setGetPlaysDisabled={setGetPlaysDisabled}
-          pushPlaysDisabled={pushPlaysDisabled}
-          setPushPlaysDisabled={setPushPlaysDisabled}
-           />
+          <ImportPlayCounts
+            getPlaylists={getPlaylists}
+            getPlays={getPlays}
+            pushPlays={pushPlays}
+            playCountImportPage={playCountImportPage}
+            setPlayCountImportPage={setPlayCountImportPage}
+            getAllPlaylists={getAllPlaylists}
+            highlightedPlaylistsExist={highlightedPlaylistsExist}
+            playlistsNotInPlays={playlistsNotInPlays}
+            setPlaylistsNotInPlays={setPlaylistsNotInPlays}
+            plays={plays}
+            getAllPlaylistsInPlays={getAllPlaylistsInPlays}
+          />
 
-          <PlaylistsTable allPlaylists={allPlaylists} allPlaylistsInPlays={allPlaylistsInPlays} />
+          <PlaylistsTable
+            allPlaylists={allPlaylists}
+            allPlaylistsInPlays={allPlaylistsInPlays}
+          />
         </div>
       )}
     </div>

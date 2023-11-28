@@ -6,7 +6,7 @@ export default function Navigation({
   editMode,
   setEditMode,
   getAllPlaylists,
-  getAllPlaylistsInPlays
+  getAllPlaylistsInPlays,
 }) {
   return (
     <div>
