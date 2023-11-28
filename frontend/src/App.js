@@ -82,18 +82,33 @@ function App() {
 
   const getPlaylistTracks = async (playlist) => {
     try {
-      const data = await spotifyApi.getPlaylist(playlist.uri);
+      let offset = 0;
       let tracks = [];
 
-      for (let i = 0; i < data.tracks.items.length; i++) {
-        tracks.push({
-          title: data.tracks.items[i].track.name,
-          artists: data.tracks.items[i].track.artists.map(
-            (artist) => artist.name
-          ),
-          uri: data.tracks.items[i].track.uri,
-          sourcePlaylist: playlist.uri,
+      // Use a loop to handle pagination
+      while (true) {
+        const data = await spotifyApi.getPlaylistTracks(playlist.uri, {
+          offset,
         });
+
+        if (data.items.length === 0) {
+          // No more tracks to fetch, exit the loop
+          break;
+        }
+
+        tracks = [
+          ...tracks,
+          ...data.items.map((item) => ({
+            title: item.track.name,
+            artists: item.track.artists.map((artist) => artist.name),
+            uri: item.track.uri,
+            sourcePlaylist: playlist.uri,
+          })),
+        ];
+
+        offset += data.items.length;
+
+        // Spotify API returns at most 100 tracks per request, so we continue fetching until all tracks are obtained
       }
 
       setPlays((prevPlays) => [...prevPlays, ...tracks]);
@@ -353,12 +368,6 @@ function App() {
       )
     );
   }, [allPlaylists, allPlaylistsInPlays]);
-
-  useEffect(() => {
-    console.log("allPlaylists", allPlaylists);
-    console.log("allPlaylistsInPlays", allPlaylistsInPlays);
-    console.log("playlistsNotInPlays", playlistsNotInPlays);
-  }, [allPlaylists, allPlaylistsInPlays, playlistsNotInPlays]);
 
   return (
     <div id="app">
