@@ -264,6 +264,7 @@ app.get("/newtracks/:year", async (req, res) => {
           FROM plays${lastyear}
           WHERE UPPER(plays${lastyear}.title) = UPPER(plays${year}.title)
           AND plays${lastyear}.artists = plays${year}.artists
+
       )`;
 
     // Add NOT EXISTS clauses for all previous years down to 2019

@@ -11,6 +11,11 @@ export default function PlayCountsTable({ searchResults }) {
     ),
   ];
 
+  // Capitalize the first letter of a string
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   // Create a map to store row numbers for each unique count value
   const countRowMap = {};
 
@@ -39,16 +44,21 @@ export default function PlayCountsTable({ searchResults }) {
     );
   });
 
-  // Add "Row" to the beginning of headers
-  headers.unshift(" ");
+  // Capitalize the first letter of each header
+  const capitalizedHeaders = headers.map((header) =>
+    header === "count" ? "🧮" : capitalizeFirstLetter(header)
+  );
+
+  // Add "Row" to the beginning of capitalized headers
+  capitalizedHeaders.unshift("#");
 
   return (
     <div>
       <table border="1">
         <thead>
           <tr>
-            {headers.map((header, index) => (
-              <th key={index}>{header}</th>
+            {capitalizedHeaders.map((header, index) => (
+              <th className={header === "#" || header === "🧮" ? "header-numeric" : "header-text" }key={index}>{header}</th>
             ))}
           </tr>
         </thead>

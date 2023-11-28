@@ -56,7 +56,7 @@ export default function PlaySearchOptions({
                 : "option-button-unselected"
             }
             id={
-              selectedTerm === "new tracks" || selectedTerm === "new artists"
+              selectedTerm === "New Tracks" || selectedTerm === "New Artists"
                 ? hideOptions
                   ? "option-button-hidden"
                   : ""

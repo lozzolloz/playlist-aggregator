@@ -12,15 +12,15 @@ export default function CreatePlaylist({
   setCreatePlaylistConfirmView,
 }) {
   return (
-    <div className="data-updater__subcontainer">
+    <div>
       {!createPlaylistConfirmView && (
-        <div>
-          <p>create playlist</p>
-          <p>
+        <div className="create-playlist-container">
+          <p className="info">Create Playlist</p>
+          <p className="info--big">
             GIRLS NIGHT OUT WRAPPED: {term} {year}
           </p>
           <button
-            className="data-updater__button"
+            className="create-button"
             onClick={() =>
               createPlaylist(
                 userId,
@@ -32,35 +32,33 @@ export default function CreatePlaylist({
               )
             }
           >
-            create playlist
+            Create Playlist
           </button>
         </div>
       )}
 
       {createPlaylistConfirmView && (
-        <div>
-          <p>blank playlist created</p>
-          <p>
+        <div className="create-playlist-container">
+          <p className="info">Blank Playlist Created</p>
+          <p className="info--big">
             GIRLS NIGHT OUT WRAPPED: {term} {year}
           </p>
-
-          <button
-            className="data-updater__button"
-            onClick={() =>
-              addTracksToPlaylist(createdPlaylistId, searchResults)
-            }
-          >
-            add {searchResults.length} tracks to playlist
-          </button>
-          <button
-            className="data-updater__button"
-            onClick={
-              () => setCreatePlaylistConfirmView(false)
-        
-            }
-          >
-            cancel
-          </button>
+          <div>
+            <button
+              className="create-button"
+              onClick={() =>
+                addTracksToPlaylist(createdPlaylistId, searchResults)
+              }
+            >
+              Add {searchResults.length} Tracks
+            </button>
+            <button
+              className="cancel-button"
+              onClick={() => setCreatePlaylistConfirmView(false)}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
     </div>

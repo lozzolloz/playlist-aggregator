@@ -34,11 +34,11 @@ function App() {
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState("");
   const years = [2019, 2020, 2021, 2022, 2023];
-  const terms = ["top tracks", "new tracks", "top artists", "new artists"];
+  const terms = ["Top Tracks", "New Tracks", "Top Artists", "New Artists"];
   const [getPlaysDisabled, setGetPlaysDisabled] = useState(true);
   const [pushPlaysDisabled, setPushPlaysDisabled] = useState(true);
   const [year, setYear] = useState(2019);
-  const [term, setTerm] = useState("top tracks");
+  const [term, setTerm] = useState("Top Tracks");
   const [searchResults, setSearchResults] = useState([]);
   const [hideOptions, setHideOptions] = useState(true);
   const [hideWrapped, setHideWrapped] = useState(false);
@@ -245,12 +245,12 @@ function App() {
     let fetchUrl = "";
     if (year === "all") {
       switch (term) {
-        case "top tracks":
+        case "Top Tracks":
         case "new tracks":
           fetchUrl = `http://localhost:5001/toptracksall`;
           break;
-        case "top artists":
-        case "new artists":
+        case "Top Artists":
+        case "New Artists":
           fetchUrl = `http://localhost:5001/topartistsall`;
           break;
         default:
@@ -258,12 +258,12 @@ function App() {
       }
     } else if (year === 2019) {
       switch (term) {
-        case "top tracks":
+        case "Top Tracks":
         case "new tracks":
           fetchUrl = `http://localhost:5001/toptracks/${year}`;
           break;
-        case "top artists":
-        case "new artists":
+        case "Top Artists":
+        case "New Artists":
           fetchUrl = `http://localhost:5001/topartists/${year}`;
           break;
         default:
@@ -271,16 +271,16 @@ function App() {
       }
     } else {
       switch (term) {
-        case "top tracks":
+        case "Top Tracks":
           fetchUrl = `http://localhost:5001/toptracks/${year}`;
           break;
-        case "top artists":
+        case "Top Artists":
           fetchUrl = `http://localhost:5001/topartists/${year}`;
           break;
         case "new tracks":
           fetchUrl = `http://localhost:5001/newtracks/${year}`;
           break;
-        case "new artists":
+        case "New Artists":
           fetchUrl = `http://localhost:5001/newartists/${year}`;
           break;
         default:
@@ -331,20 +331,20 @@ function App() {
   }, [year, term]);
 
   useEffect(() => {
-    if (term === "new tracks" || term === "top tracks") {
+    if (term === "new tracks" || term === "Top Tracks") {
       setHideWrapped(false);
     }
-    if (term === "new artists" || term === "top artists") {
+    if (term === "New Artists" || term === "Top Artists") {
       setHideWrapped(true);
     }
   }, [term]);
 
   useEffect(() => {
     if (hideOptions === true && term === "new tracks") {
-      setTerm("top tracks");
+      setTerm("Top Tracks");
     }
-    if (hideOptions === true && term === "new artists") {
-      setTerm("top artists");
+    if (hideOptions === true && term === "New Artists") {
+      setTerm("Top Artists");
     }
   }, [hideOptions, year, term]);
 
@@ -382,66 +382,68 @@ function App() {
 
       {editMode === "export" && (
         <div>
-          <PlaySearchOptions
-            year={year}
-            setYear={setYear}
-            term={term}
-            setTerm={setTerm}
-            years={years}
-            terms={terms}
-            hideOptions={hideOptions}
-            setCreatePlaylistConfirmView={setCreatePlaylistConfirmView}
-          />
-
-          {loggedIn && (term === "top tracks" || term === "new tracks") && (
-            <CreatePlaylist
-              createPlaylist={createPlaylist}
-              userId={userId}
-              term={term}
+          <div className="interface">
+            <PlaySearchOptions
               year={year}
-              addTracksToPlaylist={addTracksToPlaylist}
-              createdPlaylistId={createdPlaylistId}
-              searchResults={searchResults}
-              createPlaylistConfirmView={createPlaylistConfirmView}
+              setYear={setYear}
+              term={term}
+              setTerm={setTerm}
+              years={years}
+              terms={terms}
+              hideOptions={hideOptions}
               setCreatePlaylistConfirmView={setCreatePlaylistConfirmView}
-            />
-          )}
-
+            /></div>
+<div>
+            {loggedIn && (term === "Top Tracks" || term === "new tracks") && (
+              <CreatePlaylist
+                createPlaylist={createPlaylist}
+                userId={userId}
+                term={term}
+                year={year}
+                addTracksToPlaylist={addTracksToPlaylist}
+                createdPlaylistId={createdPlaylistId}
+                searchResults={searchResults}
+                createPlaylistConfirmView={createPlaylistConfirmView}
+                setCreatePlaylistConfirmView={setCreatePlaylistConfirmView}
+              />
+            )}
+          </div>
           <PlayCountsTable searchResults={searchResults} />
         </div>
       )}
 
       {editMode === "import" && (
         <div>
-          <ImportPlaylist
-            inputTerm={inputTerm}
-            setInputTerm={setInputTerm}
-            setInputYear={setInputYear}
-            getNewPlaylistInfo={getNewPlaylistInfo}
-            importError={importError}
-            importPlaylistConfirmView={importPlaylistConfirmView}
-            setImportPlaylistConfirmView={setImportPlaylistConfirmView}
-            pushPlaylist={pushPlaylist}
-            newPlaylistInfo={newPlaylistInfo}
-            inputYear={inputYear}
-            setNewPlaylistInfo={setNewPlaylistInfo}
-            getAllPlaylists={getAllPlaylists}
-          />
+          <div className="interface">
+            <ImportPlaylist
+              inputTerm={inputTerm}
+              setInputTerm={setInputTerm}
+              setInputYear={setInputYear}
+              getNewPlaylistInfo={getNewPlaylistInfo}
+              importError={importError}
+              importPlaylistConfirmView={importPlaylistConfirmView}
+              setImportPlaylistConfirmView={setImportPlaylistConfirmView}
+              pushPlaylist={pushPlaylist}
+              newPlaylistInfo={newPlaylistInfo}
+              inputYear={inputYear}
+              setNewPlaylistInfo={setNewPlaylistInfo}
+              getAllPlaylists={getAllPlaylists}
+            />
 
-          <ImportPlayCounts
-            getPlaylists={getPlaylists}
-            getPlays={getPlays}
-            pushPlays={pushPlays}
-            playCountImportPage={playCountImportPage}
-            setPlayCountImportPage={setPlayCountImportPage}
-            getAllPlaylists={getAllPlaylists}
-            highlightedPlaylistsExist={highlightedPlaylistsExist}
-            playlistsNotInPlays={playlistsNotInPlays}
-            setPlaylistsNotInPlays={setPlaylistsNotInPlays}
-            plays={plays}
-            getAllPlaylistsInPlays={getAllPlaylistsInPlays}
-          />
-
+            <ImportPlayCounts
+              getPlaylists={getPlaylists}
+              getPlays={getPlays}
+              pushPlays={pushPlays}
+              playCountImportPage={playCountImportPage}
+              setPlayCountImportPage={setPlayCountImportPage}
+              getAllPlaylists={getAllPlaylists}
+              highlightedPlaylistsExist={highlightedPlaylistsExist}
+              playlistsNotInPlays={playlistsNotInPlays}
+              setPlaylistsNotInPlays={setPlaylistsNotInPlays}
+              plays={plays}
+              getAllPlaylistsInPlays={getAllPlaylistsInPlays}
+            />
+          </div>
           <PlaylistsTable
             allPlaylists={allPlaylists}
             allPlaylistsInPlays={allPlaylistsInPlays}
