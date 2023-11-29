@@ -27,7 +27,7 @@ export default function CreatePlaylist({
         <div className="create-playlist-container">
           <p className="info">&nbsp;</p>
           <p className="info--big">
-            GIRLS NIGHT OUT WRAPPED: {term} {year}
+            GIRLS NIGHT OUT WRAPPED: {term} {year==='all'? 'All Time' : year}
           </p>
           <button
             className="create-button"
@@ -35,7 +35,7 @@ export default function CreatePlaylist({
               createPlaylist(
                 userId,
                 {
-                  name: `GIRLS NIGHT OUT WRAPPED: ${term} ${year}`,
+                  name: `GIRLS NIGHT OUT WRAPPED: ${term} ${year==='all'? 'All Time' : year}`,
                   public: false,
                 },
                 setCreatePlaylistPage("confirm")
