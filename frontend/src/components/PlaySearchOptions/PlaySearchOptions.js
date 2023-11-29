@@ -8,7 +8,7 @@ export default function PlaySearchOptions({
   years,
   terms,
   hideOptions,
-  setCreatePlaylistConfirmView,
+  setCreatePlaylistPage,
 }) {
   return (
     <div id="options-container">
@@ -18,7 +18,7 @@ export default function PlaySearchOptions({
             key={selectedYear}
             onClick={() => {
               setYear(selectedYear);
-              setCreatePlaylistConfirmView(false);
+              setCreatePlaylistPage('home');
             }}
             className={
               year === selectedYear
@@ -30,10 +30,10 @@ export default function PlaySearchOptions({
           </button>
         ))}
         <button
-          key={"all time"}
+          key={"All Time"}
           onClick={() => {
             setYear("all");
-            setCreatePlaylistConfirmView(false);
+            setCreatePlaylistPage('home');
           }}
           className={
             year === "all"
@@ -41,7 +41,7 @@ export default function PlaySearchOptions({
               : "option-button-unselected"
           }
         >
-          all time
+          All Time
         </button>
       </div>
 

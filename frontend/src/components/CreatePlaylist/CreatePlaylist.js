@@ -8,12 +8,22 @@ export default function CreatePlaylist({
   addTracksToPlaylist,
   createdPlaylistId,
   searchResults,
-  createPlaylistConfirmView,
-  setCreatePlaylistConfirmView,
+  createPlaylistPage,
+  setCreatePlaylistPage,
 }) {
+  async function handleAddTracksClick(createdPlaylistId, searchResults) {
+    try {
+      setCreatePlaylistPage("loading");
+      await addTracksToPlaylist(createdPlaylistId, searchResults);
+      setCreatePlaylistPage("done");
+    } catch (error) {
+      console.error("Error adding tracks to playlist:", error);
+    }
+  }
+
   return (
     <div>
-      {!createPlaylistConfirmView && (
+      {createPlaylistPage === "home" && (
         <div className="create-playlist-container">
           <p className="info">&nbsp;</p>
           <p className="info--big">
@@ -28,7 +38,7 @@ export default function CreatePlaylist({
                   name: `GIRLS NIGHT OUT WRAPPED: ${term} ${year}`,
                   public: false,
                 },
-                setCreatePlaylistConfirmView(true)
+                setCreatePlaylistPage("confirm")
               )
             }
           >
@@ -37,7 +47,7 @@ export default function CreatePlaylist({
         </div>
       )}
 
-      {createPlaylistConfirmView && (
+      {createPlaylistPage === "confirm" && (
         <div className="create-playlist-container">
           <p className="info">Blank Playlist Created</p>
           <p className="info--big">
@@ -47,20 +57,50 @@ export default function CreatePlaylist({
             <button
               className="create-button"
               onClick={() =>
-                addTracksToPlaylist(createdPlaylistId, searchResults)
+                handleAddTracksClick(createdPlaylistId, searchResults)
               }
             >
               Add {searchResults.length} Tracks
             </button>
             <button
               className="cancel-button"
-              onClick={() => setCreatePlaylistConfirmView(false)}
+              onClick={() => setCreatePlaylistPage("done")}
             >
               Cancel
             </button>
           </div>
         </div>
       )}
+
+      {createPlaylistPage === "done" && (
+        <div className="create-playlist-container">
+          <p className="info">
+            {searchResults.length} tracks added to playlist!
+          </p>
+          <p className="info--big">
+            GIRLS NIGHT OUT WRAPPED: {term} {year}
+          </p>
+          <button
+            className="create-button"
+            onClick={() => setCreatePlaylistPage("home")}
+          >
+            Home
+          </button>
+        </div>
+      )}
+
+      {createPlaylistPage === "loading" && (
+        <div className="create-playlist-container">
+          <p className="info">
+            Adding {searchResults.length} tracks to playlist...
+          </p>
+          <p className="loader"></p>
+          <p className="warning">
+            Do not navigate away from this page.
+          </p>
+        </div>
+      )}
+
     </div>
   );
 }

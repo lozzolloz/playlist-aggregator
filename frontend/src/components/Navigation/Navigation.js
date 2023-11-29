@@ -11,11 +11,15 @@ export default function Navigation({
   return (
     <div className="navbar">
       {!loggedIn && (
-        <div className="nav-buttons-div">
-          <a href={`http://localhost:8888/login`}>
-            <button className="nav-button">Log In</button>
-          </a>
-        </div>
+        <>
+          <div className="nav-buttons-div">
+            <a href={`http://localhost:8888/login`}>
+              <button className="nav-button">Log In</button>
+            </a>
+          </div>
+
+          <div className="empty-div"></div>
+        </>
       )}
 
       {loggedIn && (

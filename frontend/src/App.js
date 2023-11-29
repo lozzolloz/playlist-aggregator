@@ -52,8 +52,8 @@ function App() {
   const [importError, setImportError] = useState(false);
   const [importPlaylistConfirmView, setImportPlaylistConfirmView] =
     useState(false);
-  const [createPlaylistConfirmView, setCreatePlaylistConfirmView] =
-    useState(false);
+  const [createPlaylistPage, setCreatePlaylistPage] =
+    useState('home');
   const [playCountImportPage, setPlayCountImportPage] = useState("home");
   const [highlightedPlaylistsExist, setHighlightedPlaylistsExist] =
     useState(false);
@@ -391,11 +391,11 @@ function App() {
               years={years}
               terms={terms}
               hideOptions={hideOptions}
-              setCreatePlaylistConfirmView={setCreatePlaylistConfirmView}
+              setCreatePlaylistPage={setCreatePlaylistPage}
             />
           </div>
           <div>
-            {loggedIn && (term === "Top Tracks" || term === "new tracks") && (
+            {loggedIn && (term === "Top Tracks" || term === "New Tracks") && (
               <CreatePlaylist
                 createPlaylist={createPlaylist}
                 userId={userId}
@@ -404,8 +404,8 @@ function App() {
                 addTracksToPlaylist={addTracksToPlaylist}
                 createdPlaylistId={createdPlaylistId}
                 searchResults={searchResults}
-                createPlaylistConfirmView={createPlaylistConfirmView}
-                setCreatePlaylistConfirmView={setCreatePlaylistConfirmView}
+                createPlaylistPage={createPlaylistPage}
+                setCreatePlaylistPage={setCreatePlaylistPage}
               />
             )}
           </div>

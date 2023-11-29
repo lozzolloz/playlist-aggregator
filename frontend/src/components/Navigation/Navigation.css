@@ -1,5 +1,6 @@
 .navbar{
   position: fixed;
+  height: 100vh;
 }
 
 .nav-buttons-div {
@@ -8,6 +9,15 @@
   background-color: var(--bg);
   border-radius: 10px;
 }
+
+.empty-div {
+  margin: 20px;
+  width: 170px;
+  background-color: var(--bg);
+  border-radius: 10px;
+  height: 71vh
+}
+
 
 .nav-button,
 .nav-button--selected {
