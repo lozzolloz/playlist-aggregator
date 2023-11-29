@@ -381,7 +381,7 @@ function App() {
       />
 
       {editMode === "export" && (
-        <div>
+        <div className="main-app">
           <div className="interface">
             <PlaySearchOptions
               year={year}
@@ -392,8 +392,9 @@ function App() {
               terms={terms}
               hideOptions={hideOptions}
               setCreatePlaylistConfirmView={setCreatePlaylistConfirmView}
-            /></div>
-<div>
+            />
+          </div>
+          <div>
             {loggedIn && (term === "Top Tracks" || term === "new tracks") && (
               <CreatePlaylist
                 createPlaylist={createPlaylist}

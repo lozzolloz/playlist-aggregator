@@ -9,7 +9,7 @@ export default function Navigation({
   getAllPlaylistsInPlays,
 }) {
   return (
-    <div>
+    <div className="navbar">
       {!loggedIn && (
         <div className="nav-buttons-div">
           <a href={`http://localhost:8888/login`}>

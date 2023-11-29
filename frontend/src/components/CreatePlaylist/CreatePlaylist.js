@@ -15,7 +15,7 @@ export default function CreatePlaylist({
     <div>
       {!createPlaylistConfirmView && (
         <div className="create-playlist-container">
-          <p className="info">Create Playlist</p>
+          <p className="info">&nbsp;</p>
           <p className="info--big">
             GIRLS NIGHT OUT WRAPPED: {term} {year}
           </p>

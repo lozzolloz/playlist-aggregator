@@ -1,5 +1,5 @@
 table {
-  width: 1120px;
+
   border-collapse: collapse;
   border-spacing: 0;
   border: none;
@@ -16,6 +16,7 @@ th {
   color: var(--silver);
   font-size: 14px;
   font-weight: normal;
+  height: 40px
 }
 
 td.position,
@@ -31,7 +32,24 @@ td.count {
   align-items: center;
 }
 
-.title{
+.title, .artist{
   font-size: 16px;
   color: var(--white);
+}
+
+.position{
+  width: 30px;
+}
+
+.title{
+  width: 400px;
+
+}
+
+.artists, .artist {
+  width: 300px;
+}
+
+.count{
+  width: 30px;
 }
