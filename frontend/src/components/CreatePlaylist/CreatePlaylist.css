@@ -17,6 +17,10 @@
   margin: 10px 0 0 0;
 }
 
+
+
+
+
 .warning{
   font-size: 16px;
   color: var(--green);
@@ -58,7 +62,7 @@
 .loader {
   width: 48px;
   height: 48px;
-  border: 5px solid var(--white);
+  border: 5px solid var(--green);
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;

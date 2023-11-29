@@ -33,19 +33,21 @@ export default function ImportPlaylist({
     setImportPlaylistConfirmView(false);
     setNewPlaylistInfo(null);
     getAllPlaylists();
+    setInputTerm("");
   }
 
   function handleCancelClick() {
     setImportPlaylistConfirmView(false);
     setNewPlaylistInfo(null);
+    setInputTerm("");
   }
 
 
-  return (<div className="import-interface">
+  return (<div>
     {!importPlaylistConfirmView && (
       <div>
-        <p className="add-playlist-heading">add playlist to database</p>
-        <div className="import-interface__input">
+        <p className="add-playlist-heading">Add Playlist To Database</p>
+        <div className="add-playlist__input">
           <input placeholder="URI" onChange={handleInputTermChange}></input>
 
           <select className="year" onChange={handleInputYearChange}>
@@ -61,19 +63,19 @@ export default function ImportPlaylist({
           <button onClick={handleImportClick}>import</button>
         </div>
         <p className={"import-interface__error-" + importError}>
-          playlist not found
+          Playlist Not Found
         </p>
       </div>
     )}
 
     {importPlaylistConfirmView && (
       <div>
-      <p>{newPlaylistInfo.name}</p>
+      <p className="new-playlist-info">{newPlaylistInfo.name}</p>
       <div className="import-confirm__buttons">
-        <button onClick={handleConfirmClick}>
-          add to {inputYear} database
+        <button className="add-playlist-button" onClick={handleConfirmClick}>
+          add to {inputYear}
         </button>
-        <button onClick={handleCancelClick}>cancel</button>
+        <button className="cancel-add-playlist-button" onClick={handleCancelClick}>cancel</button>
       </div>
       </div>
     )}

@@ -20,44 +20,59 @@ export default function ImportPlayCounts({
   };
 
   const handlePushClick = async () => {
-    setPlayCountImportPage("loading");
-    await pushPlays(2023);
-    await getAllPlaylists();
-    await getAllPlaylistsInPlays();
-    setPlayCountImportPage("home");
+    try {
+      setPlayCountImportPage("loading");
+      await pushPlays(2023);
+      await getAllPlaylists();
+      await getAllPlaylistsInPlays();
+      setTimeout(() => {
+        setPlayCountImportPage("home");
+      }, 500); 
+    } catch (error) {
+      console.error("Import error:", error);
+    }
   };
+  
+  
+  
 
   return (
-    <div className="import-interface">
+    <div>
   
       {!highlightedPlaylistsExist && playCountImportPage === "home" && (
-        <div>
-          <p>All play counts are up to date!</p>
+        <div className="import-playcounts">
+          <p className="info-text">All Play Counts Are Up To Date.</p>
         </div>
       )}
       {highlightedPlaylistsExist && playCountImportPage === "home" && (
-        <div>
+        <div className="import-playcounts">
           <p className="highlighted-text">
-            Play counts awaiting import from {playlistsNotInPlays.length}{" "}
-            playlist
+            Play Counts Awaiting Import From {playlistsNotInPlays.length}{" "}
+            Playlist
             {playlistsNotInPlays.length > 1 ? "s" : ""}
           </p>
-          <button onClick={handleGetClick}>import</button>
+          <button className="import-button" onClick={handleGetClick}>Import</button>
         </div>
       )}
       {playCountImportPage === "loading" && (
-        <div>
-          <p>Importing...</p>
-          <p>Do not navigate away from this page</p>
+        <div className="import-playcounts">
+        <p className="info">
+            Importing...
+          </p>
+          <p className="loader"></p>
+          <p className="warning">
+            Do not navigate away from this page.
+          </p>
         </div>
       )}
 
       {playCountImportPage === "confirm" && (
-        <div>
-          <p>Import {plays.length} plays?</p>
-          <button onClick={handlePushClick}>import</button>
-          <button onClick={() => setPlayCountImportPage("home")}>cancel</button>
-        </div>
+        <div className="import-playcounts">
+          <p className="highlighted-text">Import {plays.length} Plays?</p>
+          <div className="import-confirm__buttons">
+          <button className='import-confirm-button' onClick={handlePushClick}>import</button>
+          <button className='import-cancel-button' onClick={() => setPlayCountImportPage("home")}>cancel</button>
+        </div></div>
       )}
     </div>
   );

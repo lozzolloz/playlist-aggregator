@@ -52,8 +52,7 @@ function App() {
   const [importError, setImportError] = useState(false);
   const [importPlaylistConfirmView, setImportPlaylistConfirmView] =
     useState(false);
-  const [createPlaylistPage, setCreatePlaylistPage] =
-    useState('home');
+  const [createPlaylistPage, setCreatePlaylistPage] = useState("home");
   const [playCountImportPage, setPlayCountImportPage] = useState("home");
   const [highlightedPlaylistsExist, setHighlightedPlaylistsExist] =
     useState(false);
@@ -414,7 +413,7 @@ function App() {
       )}
 
       {editMode === "import" && (
-        <div>
+        <div className="main-app">
           <div className="interface">
             <ImportPlaylist
               inputTerm={inputTerm}
@@ -430,7 +429,8 @@ function App() {
               setNewPlaylistInfo={setNewPlaylistInfo}
               getAllPlaylists={getAllPlaylists}
             />
-
+          </div>
+          <div>
             <ImportPlayCounts
               getPlaylists={getPlaylists}
               getPlays={getPlays}

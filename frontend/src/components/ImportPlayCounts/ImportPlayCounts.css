@@ -1,3 +1,65 @@
 .highlighted-text {
-  background-color: red;
+ font-size: 32px;
+ font-weight: bold;
+  color: var(--white);
+}
+
+.info-text{
+  font-size: 16px;
+  
+  color: var(--bg);
+  
+
+}
+
+.import-playcounts{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom, #FF5F1F , var(--bg));
+  padding: 20px;
+  border-radius: 15px;
+  width: 1100px;
+  margin: 20px;
+  height: 210px;
+}
+
+.import-button {
+  margin: 8px;
+  padding: 5px;
+  border-radius: 20px;
+  width: 145px;
+  height: 60px;
+  cursor: pointer;
+  font-size: 16px;
+  border-style: none;
+  background-color: var(--green);
+  color: var(--bg);
+}
+
+.import-confirm-button {
+  margin: 8px;
+  padding: 5px;
+  border-radius: 20px;
+  width: 145px;
+  height: 60px;
+  cursor: pointer;
+  font-size: 16px;
+  border-style: none;
+  background-color: var(--green);
+  color: var(--bg);
+}
+
+.import-cancel-button {
+  margin: 8px;
+  padding: 5px;
+  border-radius: 20px;
+  width: 100px;
+  height: 50px;
+  cursor: pointer;
+  font-size: 14px;
+  border-style: none;
+  background-color: var(--bg-hl);
+  color: var(--white);
 }

@@ -53,3 +53,7 @@ td.count {
 .count{
   width: 30px;
 }
+
+.header-row{
+  border-bottom: var(--bg-hl) 1px solid;
+}

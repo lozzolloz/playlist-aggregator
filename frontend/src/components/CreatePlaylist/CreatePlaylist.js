@@ -64,7 +64,7 @@ export default function CreatePlaylist({
             </button>
             <button
               className="cancel-button"
-              onClick={() => setCreatePlaylistPage("done")}
+              onClick={() => setCreatePlaylistPage("home")}
             >
               Cancel
             </button>

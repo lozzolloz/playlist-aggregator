@@ -56,7 +56,7 @@ export default function PlayCountsTable({ searchResults }) {
     <div>
       <table border="1">
         <thead>
-          <tr>
+          <tr className="header-row">
             {capitalizedHeaders.map((header, index) => (
               <th className={header === "#" || header === "🧮" ? "header-numeric" : "header-text" }key={index}>{header}</th>
             ))}

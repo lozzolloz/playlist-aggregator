@@ -1,38 +1,55 @@
-.playlists-table table{
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
-    border: 1px solid var(--black);
-    margin-top: 15px;
-    margin-bottom: 15px;
-    background-color: var(--white);
-    color: var(--black);
- 
+table {
+
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: none;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 20px;
+  background-color: var(--bg);
 }
 
-.playlists-table td, .playlists-table th {
-    padding: 6px 18px;
-    border: 1px solid var(--black);
+td,
+th {
+  padding: 6px 12px;
+  border: none;
+  color: var(--silver);
+  font-size: 14px;
+  font-weight: normal;
+  height: 40px
+}
 
-  }
+td.id-column,
+th.header-numeric, td.playlist-year {
+  text-align: right;
+}
 
-  .playlists-table td.position{
-        text-align: center;
-        font-weight: bold;
-  }
 
-  .playlists-table td.count{
-    text-align: center;
-  }
+th.header-text {
+  text-align: left;
+}
 
-  .id-column{
-    font-weight: bold;
-  }
 
-  .uri-column{
-    text-align: center;
-  }
+.playlist-name{
+  font-size: 16px;
+  color: var(--white);
+  width: 500px;
+}
 
-  .highlighted-row{
-    color: red;
-  }
+.id-column{
+  width: 30px;
+}
+
+
+
+.uri-column{
+  width: 200px;
+}
+
+.highlighted-row >*{
+  color: var(--green) 
+}
+
+.header-row{
+  border-bottom: var(--bg-hl) 1px solid;
+}
