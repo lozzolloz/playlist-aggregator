@@ -258,7 +258,7 @@ function App() {
     } else if (year === 2019) {
       switch (term) {
         case "Top Tracks":
-        case "new tracks":
+        case "New Tracks":
           fetchUrl = `http://localhost:5001/toptracks/${year}`;
           break;
         case "Top Artists":
@@ -276,7 +276,7 @@ function App() {
         case "Top Artists":
           fetchUrl = `http://localhost:5001/topartists/${year}`;
           break;
-        case "new tracks":
+        case "New Tracks":
           fetchUrl = `http://localhost:5001/newtracks/${year}`;
           break;
         case "New Artists":
