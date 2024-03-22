@@ -148,6 +148,11 @@ app.get("/toptracksall", async (req, res) => {
       
           SELECT title, artists, uri
           FROM plays2023
+
+          UNION ALL
+      
+          SELECT title, artists, uri
+          FROM plays2023
       ) AS combined_plays
       GROUP BY UPPER(title), artists
       ORDER BY count DESC, title;
@@ -177,6 +182,8 @@ app.get("/allplaylistsinplays", async (req, res) => {
         SELECT sourcePlaylist FROM plays2022
         UNION ALL
         SELECT sourcePlaylist FROM plays2023
+        UNION ALL
+        SELECT sourcePlaylist FROM plays2024
       ) AS combinedTable;
         `
     );
@@ -195,7 +202,7 @@ app.get("/topartists/:year", async (req, res) => {
     const result = await pool.query(
       `SELECT artist, COUNT(*) as count
       FROM (
-          SELECT unnest(artists) as artist
+          SELECT unnest(artists) as artist 
           FROM plays${year}
       ) AS unnested_artists
       GROUP BY artist
@@ -238,6 +245,11 @@ app.get("/topartistsall", async (req, res) => {
       
           SELECT unnest(artists) as artist
           FROM plays2023
+
+          UNION ALL
+      
+          SELECT unnest(artists) as artist
+          FROM plays2024
       ) AS unnested_artists
       GROUP BY artist
       ORDER BY count DESC, artist;

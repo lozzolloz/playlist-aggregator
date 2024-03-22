@@ -33,7 +33,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState("");
-  const years = [2019, 2020, 2021, 2022, 2023];
+  const years = [2019, 2020, 2021, 2022, 2023, 2024];
   const terms = ["Top Tracks", "New Tracks", "Top Artists", "New Artists"];
   const [getPlaysDisabled, setGetPlaysDisabled] = useState(true);
   const [pushPlaysDisabled, setPushPlaysDisabled] = useState(true);
@@ -47,7 +47,7 @@ function App() {
   const [editMode, setEditMode] = useState("export");
   const [allPlaylists, setAllPlaylists] = useState([]);
   const [inputTerm, setInputTerm] = useState("");
-  const [inputYear, setInputYear] = useState(2023);
+  const [inputYear, setInputYear] = useState(2024);
   const [newPlaylistInfo, setNewPlaylistInfo] = useState(null);
   const [importError, setImportError] = useState(false);
   const [importPlaylistConfirmView, setImportPlaylistConfirmView] =
