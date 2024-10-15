@@ -81,12 +81,12 @@ app.post("/addplay/:playYear", async (req, res) => {
     );
     res.json({ message: "play added successfully" });
   } catch (error) {
-    console.error("Error adding name:", error);
+    console.error("Error adding play:", error);
     res.status(500).json({ error: `Internal Server Error: ${error.message}` });
   }
 });
 
-// Remove all roms from specified year table
+// Remove all plays from the specified year table
 app.post("/removeallplays/:year", async (req, res) => {
   const { year } = req.params;
   try {
@@ -98,8 +98,14 @@ app.post("/removeallplays/:year", async (req, res) => {
   }
 });
 
-// get all plays from a year where these have been pushed, in order of most played
+// Helper function to capitalize artists
+const capitalizeArtists = (artists) => {
+  return Array.isArray(artists)
+    ? artists.map((artist) => artist.toUpperCase())
+    : artists.toUpperCase();
+};
 
+// Get all plays from a year, ordered by most played
 app.get("/toptracks/:year", async (req, res) => {
   const { year } = req.params;
 
@@ -108,19 +114,23 @@ app.get("/toptracks/:year", async (req, res) => {
       `SELECT UPPER(title) as title, artists, MIN(uri) as uri, COUNT(*) as count
       FROM plays${year}
       GROUP BY UPPER(title), artists
-      ORDER BY count DESC, title;
-      
-    `
+      ORDER BY count DESC, title;`
     );
-    res.json(result.rows);
+
+    // Capitalize artists names
+    const capitalizedResult = result.rows.map((row) => ({
+      ...row,
+      artists: capitalizeArtists(row.artists),
+    }));
+
+    res.json(capitalizedResult);
   } catch (error) {
     console.error("Error executing search query:", error);
     res.status(500).json({ error: `Internal Server Error: ${error.message}` });
   }
 });
 
-//get all plays in order of most played (most update formula with future years)
-
+// Get all plays across multiple years, ordered by most played
 app.get("/toptracksall", async (req, res) => {
   try {
     const result = await pool.query(
@@ -128,46 +138,40 @@ app.get("/toptracksall", async (req, res) => {
       FROM (
           SELECT title, artists, uri
           FROM plays2019
-      
           UNION ALL
-      
           SELECT title, artists, uri
           FROM plays2020
-      
           UNION ALL
-      
           SELECT title, artists, uri
           FROM plays2021
-      
           UNION ALL
-      
           SELECT title, artists, uri
           FROM plays2022
-      
           UNION ALL
-      
           SELECT title, artists, uri
           FROM plays2023
-
           UNION ALL
-      
           SELECT title, artists, uri
-          FROM plays2023
+          FROM plays2024
       ) AS combined_plays
       GROUP BY UPPER(title), artists
-      ORDER BY count DESC, title;
-      
-          `
+      ORDER BY count DESC, title;`
     );
-    res.json(result.rows);
+
+    // Capitalize artists names
+    const capitalizedResult = result.rows.map((row) => ({
+      ...row,
+      artists: capitalizeArtists(row.artists),
+    }));
+
+    res.json(capitalizedResult);
   } catch (error) {
     console.error("Error executing search query:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-//all playlists in plays
-
+// Get all playlists in plays
 app.get("/allplaylistsinplays", async (req, res) => {
   try {
     const result = await pool.query(
@@ -184,8 +188,7 @@ app.get("/allplaylistsinplays", async (req, res) => {
         SELECT sourcePlaylist FROM plays2023
         UNION ALL
         SELECT sourcePlaylist FROM plays2024
-      ) AS combinedTable;
-        `
+      ) AS combinedTable;`
     );
     res.json(result.rows);
   } catch (error) {
@@ -194,8 +197,7 @@ app.get("/allplaylistsinplays", async (req, res) => {
   }
 });
 
-//find top artists
-
+// Get top artists of a specific year
 app.get("/topartists/:year", async (req, res) => {
   const { year } = req.params;
   try {
@@ -206,93 +208,96 @@ app.get("/topartists/:year", async (req, res) => {
           FROM plays${year}
       ) AS unnested_artists
       GROUP BY artist
-      ORDER BY count DESC, artist;
-    `
+      ORDER BY count DESC, artist;`
     );
-    res.json(result.rows);
+
+    // Capitalize artists names
+    const capitalizedResult = result.rows.map((row) => ({
+      ...row,
+      artist: row.artist.toUpperCase(),
+    }));
+
+    res.json(capitalizedResult);
   } catch (error) {
     console.error("Error executing search query:", error);
     res.status(500).json({ error: `Internal Server Error: ${error.message}` });
   }
 });
 
+// Get top artists across all years
 app.get("/topartistsall", async (req, res) => {
-  const { year } = req.params;
-
   try {
     const result = await pool.query(
       `SELECT artist, COUNT(*) as count
       FROM (
           SELECT unnest(artists) as artist
           FROM plays2019
-      
           UNION ALL
-      
           SELECT unnest(artists) as artist
           FROM plays2020
-      
           UNION ALL
-      
           SELECT unnest(artists) as artist
           FROM plays2021
-      
           UNION ALL
-      
           SELECT unnest(artists) as artist
           FROM plays2022
-      
           UNION ALL
-      
           SELECT unnest(artists) as artist
           FROM plays2023
-
           UNION ALL
-      
           SELECT unnest(artists) as artist
           FROM plays2024
       ) AS unnested_artists
       GROUP BY artist
-      ORDER BY count DESC, artist;
-    `
+      ORDER BY count DESC, artist;`
     );
-    res.json(result.rows);
+
+    // Capitalize artists names
+    const capitalizedResult = result.rows.map((row) => ({
+      ...row,
+      artist: row.artist.toUpperCase(),
+    }));
+
+    res.json(capitalizedResult);
   } catch (error) {
     console.error("Error executing search query:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-// find new tracks
 
+// find new tracks
 app.get("/newtracks/:year", async (req, res) => {
   const { year } = req.params;
   let lastyear = year - 1;
 
   try {
-    let query = `SELECT UPPER(title) as title, artists, MIN(uri) as uri, COUNT(*) as count
+    let query = `
+      SELECT UPPER(title) as title, UPPER(artists) as artists, MIN(uri) as uri, COUNT(*) as count
       FROM plays${year}
       WHERE NOT EXISTS (
           SELECT 1
           FROM plays${lastyear}
           WHERE UPPER(plays${lastyear}.title) = UPPER(plays${year}.title)
-          AND plays${lastyear}.artists = plays${year}.artists
-
-      )`;
+          AND UPPER(plays${lastyear}.artists) = UPPER(plays${year}.artists)
+      `;
 
     // Add NOT EXISTS clauses for all previous years down to 2019
     for (let i = lastyear - 1; i >= 2019; i--) {
       query += `
-        AND NOT EXISTS (
+          AND NOT EXISTS (
           SELECT 1
           FROM plays${i}
           WHERE UPPER(plays${i}.title) = UPPER(plays${year}.title)
-          AND plays${i}.artists = plays${year}.artists
+          AND UPPER(plays${i}.artists) = UPPER(plays${year}.artists)
         )`;
     }
 
     query += `
-      GROUP BY UPPER(title), artists
-      ORDER BY count DESC, title;`;
+      )
+      GROUP BY UPPER(title), UPPER(artists)
+      ORDER BY count DESC, title;
+    `;
 
     const result = await pool.query(query);
     res.json(result.rows);
@@ -303,13 +308,13 @@ app.get("/newtracks/:year", async (req, res) => {
 });
 
 // find new artists
-
 app.get("/newartists/:year", async (req, res) => {
   const { year } = req.params;
   let lastyear = year - 1;
 
   try {
-    let query = `SELECT artist, COUNT(*) as count
+    let query = `
+      SELECT artist, COUNT(*) as count
       FROM (
           SELECT unnest(artists) as artist
           FROM plays${year}
@@ -318,12 +323,12 @@ app.get("/newartists/:year", async (req, res) => {
           SELECT 1
           FROM plays${lastyear}, unnest(plays${lastyear}.artists) AS unnested_artists_${lastyear}
           WHERE unnested_artists_${lastyear} = unnested_artists.artist
-      )`;
+      `;
 
     // Add NOT EXISTS clauses for all previous years down to 2019
     for (let i = lastyear - 1; i >= 2019; i--) {
       query += `
-        AND NOT EXISTS (
+          AND NOT EXISTS (
           SELECT 1
           FROM plays${i}, unnest(plays${i}.artists) AS unnested_artists_${i}
           WHERE unnested_artists_${i} = unnested_artists.artist
@@ -331,8 +336,10 @@ app.get("/newartists/:year", async (req, res) => {
     }
 
     query += `
+      )
       GROUP BY artist
-      ORDER BY count DESC, artist;`;
+      ORDER BY count DESC, artist;
+    `;
 
     const result = await pool.query(query);
     res.json(result.rows);
@@ -342,8 +349,12 @@ app.get("/newartists/:year", async (req, res) => {
   }
 });
 
-// Close the database connection when the server is stopped
 
+
+
+
+
+// Close the database connection when the server is stopped
 process.on("SIGINT", () => {
   pool
     .end()
