@@ -265,9 +265,6 @@ app.get("/topartistsall", async (req, res) => {
   }
 });
 
-
-
-
 // find new tracks
 app.get("/newtracks/:year", async (req, res) => {
   const { year } = req.params;
@@ -295,7 +292,14 @@ app.get("/newtracks/:year", async (req, res) => {
       GROUP BY UPPER(title), artists
       ORDER BY count DESC, title;`;
     const result = await pool.query(query);
-    res.json(result.rows);
+
+    // Capitalize artists names
+    const capitalizedResult = result.rows.map((row) => ({
+      ...row,
+      artists: capitalizeArtists(row.artists),
+    }));
+
+    res.json(capitalizedResult);
   } catch (error) {
     console.error("Error executing search query:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -329,16 +333,19 @@ app.get("/newartists/:year", async (req, res) => {
       GROUP BY artist
       ORDER BY count DESC, artist;`;
     const result = await pool.query(query);
-    res.json(result.rows);
+
+    // Capitalize artists names
+    const capitalizedResult = result.rows.map((row) => ({
+      ...row,
+      artist: row.artist.toUpperCase(),
+    }));
+
+    res.json(capitalizedResult);
   } catch (error) {
     console.error("Error executing search query:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
-
-
-
 
 // Close the database connection when the server is stopped
 process.on("SIGINT", () => {
