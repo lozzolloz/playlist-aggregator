@@ -266,39 +266,34 @@ app.get("/topartistsall", async (req, res) => {
 });
 
 
+
+
 // find new tracks
 app.get("/newtracks/:year", async (req, res) => {
   const { year } = req.params;
   let lastyear = year - 1;
-
   try {
-    let query = `
-      SELECT UPPER(title) as title, UPPER(artists) as artists, MIN(uri) as uri, COUNT(*) as count
+    let query = `SELECT UPPER(title) as title, artists, MIN(uri) as uri, COUNT(*) as count
       FROM plays${year}
       WHERE NOT EXISTS (
           SELECT 1
           FROM plays${lastyear}
           WHERE UPPER(plays${lastyear}.title) = UPPER(plays${year}.title)
-          AND UPPER(plays${lastyear}.artists) = UPPER(plays${year}.artists)
-      `;
-
+          AND plays${lastyear}.artists = plays${year}.artists
+      )`;
     // Add NOT EXISTS clauses for all previous years down to 2019
     for (let i = lastyear - 1; i >= 2019; i--) {
       query += `
-          AND NOT EXISTS (
+        AND NOT EXISTS (
           SELECT 1
           FROM plays${i}
           WHERE UPPER(plays${i}.title) = UPPER(plays${year}.title)
-          AND UPPER(plays${i}.artists) = UPPER(plays${year}.artists)
+          AND plays${i}.artists = plays${year}.artists
         )`;
     }
-
     query += `
-      )
-      GROUP BY UPPER(title), UPPER(artists)
-      ORDER BY count DESC, title;
-    `;
-
+      GROUP BY UPPER(title), artists
+      ORDER BY count DESC, title;`;
     const result = await pool.query(query);
     res.json(result.rows);
   } catch (error) {
@@ -306,15 +301,12 @@ app.get("/newtracks/:year", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 // find new artists
 app.get("/newartists/:year", async (req, res) => {
   const { year } = req.params;
   let lastyear = year - 1;
-
   try {
-    let query = `
-      SELECT artist, COUNT(*) as count
+    let query = `SELECT artist, COUNT(*) as count
       FROM (
           SELECT unnest(artists) as artist
           FROM plays${year}
@@ -323,24 +315,19 @@ app.get("/newartists/:year", async (req, res) => {
           SELECT 1
           FROM plays${lastyear}, unnest(plays${lastyear}.artists) AS unnested_artists_${lastyear}
           WHERE unnested_artists_${lastyear} = unnested_artists.artist
-      `;
-
+      )`;
     // Add NOT EXISTS clauses for all previous years down to 2019
     for (let i = lastyear - 1; i >= 2019; i--) {
       query += `
-          AND NOT EXISTS (
+        AND NOT EXISTS (
           SELECT 1
           FROM plays${i}, unnest(plays${i}.artists) AS unnested_artists_${i}
           WHERE unnested_artists_${i} = unnested_artists.artist
         )`;
     }
-
     query += `
-      )
       GROUP BY artist
-      ORDER BY count DESC, artist;
-    `;
-
+      ORDER BY count DESC, artist;`;
     const result = await pool.query(query);
     res.json(result.rows);
   } catch (error) {
@@ -348,7 +335,6 @@ app.get("/newartists/:year", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 
 
 
